@@ -34,6 +34,16 @@ class TazaTilApp extends StatelessWidget {
       theme: _buildLightTheme(),
       darkTheme: _buildDarkTheme(),
       home: const HomeScreen(),
+      // Apply user's font scale preference globally
+      builder: (context, child) {
+        final ctrl = Get.find<WordController>();
+        return Obx(() => MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                textScaler: TextScaler.linear(ctrl.fontScale.value),
+              ),
+              child: child!,
+            ));
+      },
     );
   }
 

@@ -296,28 +296,46 @@ class _DetectorScreenState extends State<DetectorScreen> {
               ),
             ]),
             const SizedBox(height: 10),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed:
-                    loading ? null : () => controller.rewriteWithAI(text),
-                icon: loading
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                            strokeWidth: 2, color: Colors.white))
-                    : const Icon(Icons.auto_fix_high, size: 18),
-                label: Text(loading
-                    ? 'Аударылуда...'
-                    : '$providerLabel аудару'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed:
+                        loading ? null : () => controller.rewriteWithAI(text),
+                    icon: loading
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                                strokeWidth: 2, color: Colors.white))
+                        : const Icon(Icons.auto_fix_high, size: 18),
+                    label: Text(loading
+                        ? 'Аударылуда...'
+                        : '$providerLabel аудару'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(width: 8),
+                OutlinedButton.icon(
+                  onPressed: () => _showAiHistoryBottomSheet(context),
+                  icon: const Icon(Icons.history_edu, size: 16),
+                  label: const Text('ЖИ тарихы',
+                      style: TextStyle(fontSize: 12)),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: primary,
+                    side: BorderSide(color: primary.withValues(alpha: 0.5)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 12),
+                  ),
+                ),
+              ],
             ),
             if (result.isNotEmpty) ...[
               const SizedBox(height: 12),
@@ -360,6 +378,53 @@ class _DetectorScreenState extends State<DetectorScreen> {
                     ),
                     const Divider(height: 16),
                     _buildFormattedResult(result),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        // Сақтау кнопкасы
+                        IconButton(
+                          icon: const Icon(Icons.bookmark_add_outlined,
+                              size: 20, color: Color(0xFF2E7D32)),
+                          tooltip: 'Тарихқа сақтау',
+                          onPressed: () {
+                            controller.saveAiAnalysis(
+                              text,
+                              result,
+                              controller.selectedAIProvider.value,
+                            );
+                            Get.snackbar(
+                              'Сақталды',
+                              'Тарихқа сақталды',
+                              snackPosition: SnackPosition.BOTTOM,
+                              duration: const Duration(seconds: 2),
+                              backgroundColor: const Color(0xFF2E7D32),
+                              colorText: Colors.white,
+                              margin: const EdgeInsets.all(12),
+                              borderRadius: 10,
+                            );
+                          },
+                        ),
+                        // Бөлісу кнопкасы
+                        IconButton(
+                          icon: const Icon(Icons.share,
+                              size: 20, color: Color(0xFF2E7D32)),
+                          tooltip: 'Бөлісу',
+                          onPressed: () {
+                            final cleanResult =
+                                result.replaceAll('**', '');
+                            final shareText =
+                                '🇰🇿 Таза Тіл — ЖИ талдауы\n\n'
+                                '📝 Кіріс мәтін:\n'
+                                '"$text"\n\n'
+                                '$cleanResult\n\n'
+                                '─────────────────\n'
+                                '📱 Таза Тіл қосымшасы | #ТазаТіл #ҚазақТілі';
+                            Share.share(shareText);
+                          },
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -420,6 +485,213 @@ class _DetectorScreenState extends State<DetectorScreen> {
                 height: 1.4),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showAiHistoryBottomSheet(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.6,
+          maxChildSize: 0.9,
+          minChildSize: 0.35,
+          expand: false,
+          builder: (_, scrollCtrl) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 12),
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Icon(Icons.history_edu, size: 18, color: primary),
+                      const SizedBox(width: 8),
+                      Text(
+                        'ЖИ тарихы',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: primary,
+                        ),
+                      ),
+                      const Spacer(),
+                      Obx(() => controller.aiHistory.isNotEmpty
+                          ? TextButton(
+                              onPressed: () {
+                                controller.clearAiHistory();
+                                Navigator.pop(ctx);
+                              },
+                              child: Text('Тазарту',
+                                  style: TextStyle(
+                                      color: Colors.red[400], fontSize: 12)),
+                            )
+                          : const SizedBox.shrink()),
+                    ],
+                  ),
+                  const Divider(),
+                  Expanded(
+                    child: Obx(() {
+                      if (controller.aiHistory.isEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.history_edu,
+                                  size: 48,
+                                  color: Colors.grey[300]),
+                              const SizedBox(height: 12),
+                              Text(
+                                'ЖИ талдауы жоқ',
+                                style: TextStyle(
+                                    color: Colors.grey[500], fontSize: 14),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      return ListView.builder(
+                        controller: scrollCtrl,
+                        itemCount: controller.aiHistory.length,
+                        itemBuilder: (_, i) {
+                          final entry = controller.aiHistory[i];
+                          return _AiHistoryTile(
+                            entry: entry,
+                            onTap: () {
+                              Navigator.pop(ctx);
+                              _showAiAnalysisDialog(context, entry);
+                            },
+                          );
+                        },
+                      );
+                    }),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showAiAnalysisDialog(
+      BuildContext context, Map<String, dynamic> entry) {
+    final primary = Theme.of(context).colorScheme.primary;
+    final provider = entry['provider'] as String? ?? '';
+    final providerLabel = provider == 'claude' ? '🤖 Claude' : '⚡ Groq';
+    final aiResult = entry['aiResult'] as String? ?? '';
+    final inputText = entry['text'] as String? ?? '';
+    final dt =
+        DateTime.tryParse(entry['timestamp'] as String? ?? '');
+    final timeStr = dt != null
+        ? '${dt.day.toString().padLeft(2, '0')}.${dt.month.toString().padLeft(2, '0')} '
+            '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}'
+        : '';
+
+    showDialog(
+      context: context,
+      builder: (ctx) => Dialog(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 8, 0),
+              child: Row(
+                children: [
+                  Icon(Icons.psychology, size: 16, color: primary),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      '$providerLabel — $timeStr',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 13,
+                          color: primary),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close, size: 18),
+                    onPressed: () => Navigator.pop(ctx),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                inputText,
+                style:
+                    TextStyle(fontSize: 12, color: Colors.grey[600]),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const Divider(height: 12),
+            Flexible(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                child: _buildFormattedResult(aiResult),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton.icon(
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: aiResult));
+                      Get.snackbar('Көшірілді', '',
+                          snackPosition: SnackPosition.BOTTOM,
+                          duration: const Duration(seconds: 1));
+                    },
+                    icon: const Icon(Icons.copy, size: 15),
+                    label: const Text('Көшіру',
+                        style: TextStyle(fontSize: 12)),
+                  ),
+                  TextButton.icon(
+                    onPressed: () {
+                      final cleanResult = aiResult.replaceAll('**', '');
+                      final shareText =
+                          '🇰🇿 Таза Тіл — ЖИ талдауы\n\n'
+                          '📝 Кіріс мәтін:\n'
+                          '"$inputText"\n\n'
+                          '$cleanResult\n\n'
+                          '─────────────────\n'
+                          '📱 Таза Тіл қосымшасы | #ТазаТіл #ҚазақТілі';
+                      Share.share(shareText);
+                    },
+                    icon: const Icon(Icons.share, size: 15),
+                    label: const Text('Бөлісу',
+                        style: TextStyle(fontSize: 12)),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -616,6 +888,75 @@ class _Section extends StatelessWidget {
         const SizedBox(height: 8),
         child,
       ],
+    );
+  }
+}
+
+class _AiHistoryTile extends StatelessWidget {
+  final Map<String, dynamic> entry;
+  final VoidCallback onTap;
+  const _AiHistoryTile({required this.entry, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final dt = DateTime.tryParse(entry['timestamp'] as String? ?? '');
+    final timeStr = dt != null
+        ? '${dt.day.toString().padLeft(2, '0')}.${dt.month.toString().padLeft(2, '0')} '
+            '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}'
+        : '';
+    final provider = entry['provider'] as String? ?? '';
+    final providerLabel = provider == 'claude' ? '🤖 Claude' : '⚡ Groq';
+    final text = entry['text'] as String? ?? '';
+    final preview = text.length > 60 ? '${text.substring(0, 60)}...' : text;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 6),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(10),
+          border:
+              Border.all(color: Colors.grey.withValues(alpha: 0.2)),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    preview,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    providerLabel,
+                    style: const TextStyle(
+                        fontSize: 11, color: Color(0xFF2E7D32)),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(timeStr,
+                    style:
+                        TextStyle(fontSize: 11, color: Colors.grey[500])),
+                const SizedBox(height: 4),
+                const Icon(Icons.chevron_right,
+                    size: 16, color: Color(0xFF2E7D32)),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
