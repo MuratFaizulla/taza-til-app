@@ -69,7 +69,7 @@ class WordOfDayScreen extends StatelessWidget {
             color: const Color(0xFFE8F5E9),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-                color: const Color(0xFF2E7D32).withOpacity(0.3)),
+                color: const Color(0xFF2E7D32).withValues(alpha: 0.3)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -89,10 +89,10 @@ class WordOfDayScreen extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
-            color: _diffColor(word.difficulty).withOpacity(0.1),
+            color: _diffColor(word.difficulty).withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-                color: _diffColor(word.difficulty).withOpacity(0.4)),
+                color: _diffColor(word.difficulty).withValues(alpha: 0.4)),
           ),
           child: Text(
             _diffLabel(word.difficulty),
@@ -119,7 +119,7 @@ class WordOfDayScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF2E7D32).withOpacity(0.35),
+            color: const Color(0xFF2E7D32).withValues(alpha: 0.35),
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),
@@ -133,7 +133,7 @@ class WordOfDayScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(
                   horizontal: 14, vertical: 5),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
+                color: Colors.white.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: const Text('Күннің сөзі',
@@ -158,7 +158,7 @@ class WordOfDayScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
+                color: Colors.white.withValues(alpha: 0.15),
                 shape: BoxShape.circle,
               ),
               child: const Icon(Icons.arrow_downward,
@@ -218,9 +218,9 @@ class WordOfDayScreen extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.15),
+          color: Colors.white.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white.withOpacity(0.3)),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -313,7 +313,7 @@ class WordOfDayScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
                               color: const Color(0xFF2E7D32)
-                                  .withOpacity(0.4)),
+                                  .withValues(alpha: 0.4)),
                         ),
                         child: Text(s,
                             style: const TextStyle(
@@ -334,10 +334,10 @@ class WordOfDayScreen extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF2E7D32).withOpacity(0.06),
+        color: const Color(0xFF2E7D32).withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-            color: const Color(0xFF2E7D32).withOpacity(0.2)),
+            color: const Color(0xFF2E7D32).withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
@@ -374,7 +374,7 @@ class WordOfDayScreen extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 18, color: color),

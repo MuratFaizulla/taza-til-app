@@ -172,7 +172,7 @@ class _DetectorScreenState extends State<DetectorScreen> {
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.withOpacity(0.2)),
+          border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
         ),
         child: RichText(
           text: TextSpan(
@@ -263,7 +263,7 @@ class _DetectorScreenState extends State<DetectorScreen> {
         final loading = controller.isLoadingAI.value;
         final result = controller.aiRewrittenText.value;
         final provider = controller.selectedAIProvider.value;
-        final providerLabel = provider == 'claude' ? '🤖 Claude' : '⚡ Grok';
+        final providerLabel = provider == 'claude' ? '🤖 Claude' : '⚡ Groq';
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -282,10 +282,10 @@ class _DetectorScreenState extends State<DetectorScreen> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: primary.withOpacity(0.1),
+                    color: primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                        color: primary.withOpacity(0.3)),
+                        color: primary.withValues(alpha: 0.3)),
                   ),
                   child: Text('Ауыстыру',
                       style: TextStyle(
@@ -325,19 +325,20 @@ class _DetectorScreenState extends State<DetectorScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE8F5E9),
+                  color: Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: const Color(0xFFA5D6A7)),
+                  border: Border.all(
+                      color: const Color(0xFFA5D6A7)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.check,
+                        const Icon(Icons.psychology,
                             size: 14, color: Color(0xFF2E7D32)),
                         const SizedBox(width: 6),
-                        const Text('Аударылған мәтін',
+                        const Text('ЖИ талдауы',
                             style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 color: Color(0xFF1B5E20),
@@ -357,10 +358,8 @@ class _DetectorScreenState extends State<DetectorScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
-                    Text(result,
-                        style: const TextStyle(
-                            fontSize: 14, height: 1.5)),
+                    const Divider(height: 16),
+                    _buildFormattedResult(result),
                   ],
                 ),
               ),
@@ -400,7 +399,7 @@ class _DetectorScreenState extends State<DetectorScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.withOpacity(0.2)),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
@@ -422,6 +421,111 @@ class _DetectorScreenState extends State<DetectorScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildFormattedResult(String result) {
+    final lines = result.split('\n');
+    final widgets = <Widget>[];
+
+    for (final raw in lines) {
+      if (raw.trim() == '---') {
+        widgets.add(const Divider(height: 20, color: Color(0xFFA5D6A7)));
+        continue;
+      }
+      if (raw.trim().isEmpty) {
+        widgets.add(const SizedBox(height: 4));
+        continue;
+      }
+      widgets.add(_buildResultLine(raw));
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: widgets,
+    );
+  }
+
+  Widget _buildResultLine(String line) {
+    // Bold headers like **Табылған калька:**
+    final boldPattern = RegExp(r'\*\*(.+?)\*\*');
+    if (boldPattern.hasMatch(line)) {
+      final spans = <InlineSpan>[];
+      int last = 0;
+      for (final m in boldPattern.allMatches(line)) {
+        if (m.start > last) {
+          spans.add(TextSpan(
+            text: line.substring(last, m.start),
+            style: const TextStyle(fontSize: 14, height: 1.6),
+          ));
+        }
+        spans.add(TextSpan(
+          text: m.group(1),
+          style: const TextStyle(
+              fontSize: 14,
+              height: 1.6,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF1B5E20)),
+        ));
+        last = m.end;
+      }
+      if (last < line.length) {
+        spans.add(TextSpan(
+          text: line.substring(last),
+          style: const TextStyle(fontSize: 14, height: 1.6),
+        ));
+      }
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 2),
+        child: RichText(
+          text: TextSpan(
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface),
+            children: spans,
+          ),
+        ),
+      );
+    }
+
+    // ❌ lines — red tint
+    if (line.trimLeft().startsWith('❌')) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 2),
+        child: Text(line,
+            style: const TextStyle(
+                fontSize: 14, height: 1.6, color: Color(0xFFB71C1C))),
+      );
+    }
+
+    // ✅ lines — green tint
+    if (line.trimLeft().startsWith('✅')) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 2),
+        child: Text(line,
+            style: const TextStyle(
+                fontSize: 14, height: 1.6, color: Color(0xFF2E7D32))),
+      );
+    }
+
+    // bullet • lines — slight indent
+    if (line.trimLeft().startsWith('•')) {
+      return Padding(
+        padding: const EdgeInsets.only(left: 8, bottom: 2),
+        child: Text(line,
+            style: TextStyle(
+                fontSize: 14,
+                height: 1.6,
+                color: Theme.of(context).colorScheme.onSurface)),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 2),
+      child: Text(line,
+          style: TextStyle(
+              fontSize: 14,
+              height: 1.6,
+              color: Theme.of(context).colorScheme.onSurface)),
     );
   }
 
@@ -534,7 +638,7 @@ class _HistoryTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.withOpacity(0.2)),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [

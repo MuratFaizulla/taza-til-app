@@ -166,7 +166,7 @@ class WordCard extends StatelessWidget {
                   color: Theme.of(context)
                       .colorScheme
                       .onSurface
-                      .withOpacity(0.8),
+                      .withValues(alpha: 0.8),
                   height: 1.4)),
         ),
       ],
@@ -222,7 +222,7 @@ class WordCard extends StatelessWidget {
                 color: const Color(0xFFE8F5E9),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                    color: const Color(0xFF2E7D32).withOpacity(0.4)),
+                    color: const Color(0xFF2E7D32).withValues(alpha: 0.4)),
               ),
               child: Text(s,
                   style: const TextStyle(

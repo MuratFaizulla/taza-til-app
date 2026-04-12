@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Text(
@@ -66,7 +66,7 @@ class HomeScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
@@ -87,18 +87,18 @@ class HomeScreen extends StatelessWidget {
         ),
         body: IndexedStack(
           index: idx,
-          children: const [
-            DictionaryScreen(),
+          children: [
+            const DictionaryScreen(),
             DetectorScreen(),
-            QuizScreen(),
-            WordOfDayScreen(),
+            const QuizScreen(),
+            const WordOfDayScreen(),
           ],
         ),
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.08),
+                color: Colors.black.withValues(alpha: 0.08),
                 blurRadius: 12,
                 offset: const Offset(0, -3),
               ),

@@ -87,7 +87,7 @@ class _IdleView extends StatelessWidget {
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: primary.withOpacity(0.1),
+                color: primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(Icons.quiz, size: 52, color: primary),
@@ -111,7 +111,7 @@ class _IdleView extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 10),
                     decoration: BoxDecoration(
-                      color: Colors.amber.withOpacity(0.15),
+                      color: Colors.amber.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(color: Colors.amber),
                     ),
@@ -176,7 +176,7 @@ class _IdleView extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: primary.withOpacity(0.1),
+                        color: primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child:
@@ -236,7 +236,7 @@ class _PlayingView extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: (idx + 1) / total,
                 minHeight: 8,
-                backgroundColor: primary.withOpacity(0.15),
+                backgroundColor: primary.withValues(alpha: 0.15),
                 valueColor: AlwaysStoppedAnimation<Color>(primary),
               ),
             ),
@@ -258,7 +258,7 @@ class _PlayingView extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: primary.withOpacity(0.35),
+                    color: primary.withValues(alpha: 0.35),
                     blurRadius: 16,
                     offset: const Offset(0, 6),
                   ),
@@ -269,7 +269,7 @@ class _PlayingView extends StatelessWidget {
                   Text(
                     'Қазақшасы қандай?',
                     style: TextStyle(
-                        color: Colors.white.withOpacity(0.7), fontSize: 13),
+                        color: Colors.white.withValues(alpha: 0.7), fontSize: 13),
                   ),
                   const SizedBox(height: 12),
                   Text(
@@ -284,7 +284,7 @@ class _PlayingView extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -316,7 +316,7 @@ class _PlayingView extends StatelessWidget {
 
               if (!answered) {
                 bgColor = Theme.of(context).cardColor;
-                borderColor = Colors.grey.withOpacity(0.3);
+                borderColor = Colors.grey.withValues(alpha: 0.3);
                 textColor = Theme.of(context).colorScheme.onSurface;
               } else if (isCorrect) {
                 bgColor = const Color(0xFFE8F5E9);
@@ -327,12 +327,12 @@ class _PlayingView extends StatelessWidget {
                 borderColor = const Color(0xFFD32F2F);
                 textColor = const Color(0xFFD32F2F);
               } else {
-                bgColor = Theme.of(context).cardColor.withOpacity(0.5);
-                borderColor = Colors.grey.withOpacity(0.2);
+                bgColor = Theme.of(context).cardColor.withValues(alpha: 0.5);
+                borderColor = Colors.grey.withValues(alpha: 0.2);
                 textColor = Theme.of(context)
                     .colorScheme
                     .onSurface
-                    .withOpacity(0.5);
+                    .withValues(alpha: 0.5);
               }
 
               return Padding(
@@ -354,7 +354,7 @@ class _PlayingView extends StatelessWidget {
                           width: 28,
                           height: 28,
                           decoration: BoxDecoration(
-                            color: borderColor.withOpacity(0.15),
+                            color: borderColor.withValues(alpha: 0.15),
                             shape: BoxShape.circle,
                           ),
                           child: Center(
@@ -467,7 +467,7 @@ class _FinishedView extends StatelessWidget {
               height: 150,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: scoreColor.withOpacity(0.1),
+                color: scoreColor.withValues(alpha: 0.1),
                 border: Border.all(color: scoreColor, width: 4),
               ),
               child: Column(
@@ -514,7 +514,7 @@ class _FinishedView extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.amber.withOpacity(0.15),
+                  color: Colors.amber.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: Colors.amber),
                 ),

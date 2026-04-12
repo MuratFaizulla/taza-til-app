@@ -216,7 +216,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               leading: Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: primary.withOpacity(0.12),
+                  color: primary.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text('ТТ',
@@ -263,10 +263,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: selected ? primary.withOpacity(0.12) : Colors.transparent,
+            color: selected ? primary.withValues(alpha: 0.12) : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: selected ? primary : Colors.grey.withOpacity(0.3),
+              color: selected ? primary : Colors.grey.withValues(alpha: 0.3),
               width: selected ? 1.5 : 1,
             ),
           ),
@@ -320,7 +320,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: primary.withOpacity(0.1),
+                  color: primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text('Бар',
@@ -417,7 +417,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       trailing: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(value,

@@ -116,7 +116,7 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                   controller.selectCategory(cat);
                   setState(() => _expanded.clear());
                 },
-                selectedColor: primary.withOpacity(0.15),
+                selectedColor: primary.withValues(alpha: 0.15),
                 checkmarkColor: primary,
                 labelStyle: TextStyle(
                   fontSize: 12,
@@ -128,7 +128,7 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                 side: BorderSide(
                     color: selected
                         ? primary
-                        : Colors.grey.withOpacity(0.3)),
+                        : Colors.grey.withValues(alpha: 0.3)),
               ),
             );
           },
@@ -152,13 +152,13 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
             color: active
-                ? Colors.red.withOpacity(0.08)
+                ? Colors.red.withValues(alpha: 0.08)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               color: active
-                  ? Colors.red.withOpacity(0.4)
-                  : Colors.grey.withOpacity(0.25),
+                  ? Colors.red.withValues(alpha: 0.4)
+                  : Colors.grey.withValues(alpha: 0.25),
             ),
           ),
           child: Row(
