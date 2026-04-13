@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
@@ -52,28 +51,12 @@ class WordController extends GetxController {
   final RxString grokApiKey = ''.obs;
   final RxString selectedAIProvider = 'claude'.obs; // 'claude' | 'grok'
 
-  // ── TTS ────────────────────────────────────────────────────────────────────
-  late FlutterTts _tts;
-  final RxBool isSpeaking = false.obs;
-  final RxBool ttsAvailable = false.obs;
-  final RxString ttsLanguage = ''.obs;
-  // TTS settings
-  final RxDouble ttsSpeed = 0.45.obs;     // flutter_tts native 0.0–1.0 (×2 → display x)
-  final RxDouble ttsPitch = 1.0.obs;      // 0.5–2.0
-  final RxString ttsVoiceName = ''.obs;   // user-selected voice name
-  final RxList<Map<String, dynamic>> availableVoices = <Map<String, dynamic>>[].obs;
-
   // ── Font Scale ──────────────────────────────────────────────────────────────
-  final RxDouble fontScale = 1.0.obs;     // 0.85 / 1.0 / 1.15
+  final RxDouble fontScale = 1.0.obs;
 
   // ── Word of Day stats ──────────────────────────────────────────────────────
-  final RxInt streak = 0.obs;
   final RxInt learnedCount = 0.obs;
   final RxList<String> learnedWords = <String>[].obs;
-
-  // ── Test mode ──────────────────────────────────────────────────────────────
-  final RxBool testModeEnabled = false.obs;
-  final RxInt testStreakDays = 1.obs;
 
   late final Map<String, Word> _kalkaMap;
 
@@ -83,105 +66,7 @@ class WordController extends GetxController {
     allWords.assignAll(WordsData.words);
     filteredWords.assignAll(WordsData.words);
     _kalkaMap = WordsData.kalkaMap;
-    _loadSettings();  // first — load saved TTS prefs into Rx vars
-    _initTts();       // then  — apply them to FlutterTts
-  }
-
-  @override
-  void onClose() {
-    _tts.stop();
-    super.onClose();
-  }
-
-  // ══════════════════════════════════════════════════════════════════════════
-  // TTS
-  // ══════════════════════════════════════════════════════════════════════════
-  Future<void> _initTts() async {
-    try {
-      _tts = FlutterTts();
-
-      // ── Load all available voices for settings UI ──────────────────────────
-      final voices = await _tts.getVoices;
-      if (voices != null) {
-        availableVoices.assignAll(
-          voices.map((v) => Map<String, dynamic>.from(v as Map)).toList(),
-        );
-      }
-
-      bool voiceApplied = false;
-
-      // ── 1. Apply user-saved voice preference ──────────────────────────────
-      if (ttsVoiceName.value.isNotEmpty && voices != null) {
-        for (final v in voices) {
-          if (v['name'].toString() == ttsVoiceName.value) {
-            await _tts.setVoice({
-              'name': v['name'].toString(),
-              'locale': v['locale'].toString(),
-            });
-            ttsLanguage.value = v['locale'].toString();
-            voiceApplied = true;
-            break;
-          }
-        }
-      }
-
-      // ── 2. Auto-detect best voice: kk → tr → ru ───────────────────────────
-      if (!voiceApplied) {
-        String? kkVoice;
-        if (voices != null) {
-          for (final v in voices) {
-            final name = (v['name'] ?? '').toString().toLowerCase();
-            final locale = (v['locale'] ?? '').toString().toLowerCase();
-            if (locale.contains('kk') ||
-                name.contains('kazakh') ||
-                name.contains('қазақ')) {
-              kkVoice = v['name'].toString();
-              break;
-            }
-          }
-        }
-        if (kkVoice != null) {
-          await _tts.setVoice({'name': kkVoice, 'locale': 'kk-KZ'});
-          ttsLanguage.value = 'kk-KZ';
-        } else {
-          final result = await _tts.setLanguage('kk-KZ');
-          if (result == 1) {
-            ttsLanguage.value = 'kk-KZ';
-          } else {
-            final trResult = await _tts.setLanguage('tr-TR');
-            if (trResult == 1) {
-              ttsLanguage.value = 'tr-TR';
-            } else {
-              await _tts.setLanguage('ru-RU');
-              ttsLanguage.value = 'ru-RU';
-            }
-          }
-        }
-      }
-
-      // ── 3. Apply saved speed / pitch ──────────────────────────────────────
-      await _tts.setSpeechRate(ttsSpeed.value);
-      await _tts.setPitch(ttsPitch.value);
-      await _tts.setVolume(1.0);
-
-      _tts.setStartHandler(() => isSpeaking.value = true);
-      _tts.setCompletionHandler(() => isSpeaking.value = false);
-      _tts.setCancelHandler(() => isSpeaking.value = false);
-      _tts.setErrorHandler((_) => isSpeaking.value = false);
-      ttsAvailable.value = true;
-    } catch (_) {
-      ttsAvailable.value = false;
-    }
-  }
-
-  Future<void> speak(String text) async {
-    if (!ttsAvailable.value) return;
-    if (isSpeaking.value) {
-      await _tts.stop();
-      isSpeaking.value = false;
-      return;
-    }
-    await _tts.speak(text);
+    _loadSettings();
   }
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -196,14 +81,6 @@ class WordController extends GetxController {
     selectedAIProvider.value =
         box.get('selectedAIProvider', defaultValue: 'claude') as String;
     bestScore.value = box.get('bestScore', defaultValue: 0) as int;
-
-    // TTS prefs
-    ttsSpeed.value =
-        (box.get('ttsSpeed', defaultValue: 0.45) as num).toDouble();
-    ttsPitch.value =
-        (box.get('ttsPitch', defaultValue: 1.0) as num).toDouble();
-    ttsVoiceName.value =
-        box.get('ttsVoiceName', defaultValue: '') as String;
 
     // Font scale
     fontScale.value =
@@ -234,7 +111,6 @@ class WordController extends GetxController {
         box.get('learnedWords', defaultValue: <dynamic>[]) as List;
     learnedWords.assignAll(learnedList.map((e) => e.toString()));
     learnedCount.value = learnedWords.length;
-    _updateStreak();
   }
 
   void toggleDarkMode() {
@@ -263,30 +139,6 @@ class WordController extends GetxController {
       selectedAIProvider.value == 'claude' ? claudeApiKey.value : grokApiKey.value;
 
   bool get hasActiveKey => activeApiKey.isNotEmpty;
-
-  // ── TTS setters ────────────────────────────────────────────────────────────
-  Future<void> setTtsSpeed(double speed) async {
-    ttsSpeed.value = speed;
-    Hive.box('settings').put('ttsSpeed', speed);
-    if (ttsAvailable.value) await _tts.setSpeechRate(speed);
-  }
-
-  Future<void> setTtsPitch(double pitch) async {
-    ttsPitch.value = pitch;
-    Hive.box('settings').put('ttsPitch', pitch);
-    if (ttsAvailable.value) await _tts.setPitch(pitch);
-  }
-
-  Future<void> setTtsVoice(Map<String, dynamic> voice) async {
-    final name = voice['name'].toString();
-    final locale = (voice['locale'] ?? '').toString();
-    ttsVoiceName.value = name;
-    ttsLanguage.value = locale;
-    Hive.box('settings').put('ttsVoiceName', name);
-    if (ttsAvailable.value) {
-      await _tts.setVoice({'name': name, 'locale': locale});
-    }
-  }
 
   // ── Font scale ─────────────────────────────────────────────────────────────
   void setFontScale(double scale) {
@@ -401,33 +253,6 @@ class WordController extends GetxController {
   void clearHistory() {
     detectorHistory.clear();
     Hive.box('settings').put('detectorHistory', []);
-  }
-
-  void toggleTestMode(bool enabled) {
-    testModeEnabled.value = enabled;
-    if (enabled) {
-      streak.value = testStreakDays.value;
-    } else {
-      // восстанавливаем реальный streak
-      _updateStreak();
-    }
-  }
-
-  void setTestStreakDays(int days) {
-    testStreakDays.value = days;
-    if (testModeEnabled.value) {
-      streak.value = days;
-    }
-  }
-
-  void debugResetStreak() {
-    testModeEnabled.value = false;
-    final box = Hive.box('settings');
-    box.put('lastVisit', '');
-    box.put('streak', 0);
-    streak.value = 0;
-    Get.snackbar('🔄 Reset', 'Streak = 0',
-        snackPosition: SnackPosition.BOTTOM);
   }
 
   void saveAiAnalysis(String inputText, String aiResult, String provider) {
@@ -645,33 +470,6 @@ class WordController extends GetxController {
   }
 
   bool isWordLearned(String kalka) => learnedWords.contains(kalka);
-
-  void _updateStreak() {
-    final box = Hive.box('settings');
-    final today = _todayStr();
-    final lastVisit = box.get('lastVisit', defaultValue: '') as String;
-    final currentStreak = box.get('streak', defaultValue: 0) as int;
-
-    if (lastVisit == today) {
-      streak.value = currentStreak;
-      return;
-    }
-
-    final yesterday = DateTime.now().subtract(const Duration(days: 1));
-    final yStr =
-        '${yesterday.year}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.day.toString().padLeft(2, '0')}';
-
-    if (lastVisit == yStr) {
-      streak.value = currentStreak + 1;
-    } else if (lastVisit.isEmpty) {
-      streak.value = 1;
-    } else {
-      streak.value = 1; // сброс
-    }
-
-    box.put('streak', streak.value);
-    box.put('lastVisit', today);
-  }
 
   // ══════════════════════════════════════════════════════════════════════════
   // Quiz

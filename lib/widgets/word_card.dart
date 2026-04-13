@@ -117,20 +117,6 @@ class WordCard extends StatelessWidget {
             ),
           );
         }),
-        // TTS button
-        Obx(() => GestureDetector(
-              onTap: () => controller.speak(word.kazakh),
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: Icon(
-                  controller.isSpeaking.value
-                      ? Icons.stop_circle_outlined
-                      : Icons.volume_up_outlined,
-                  size: 18,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            )),
         // Expand arrow
         Icon(
           expanded ? Icons.expand_less : Icons.expand_more,
@@ -301,19 +287,6 @@ class WordCardHighlight extends StatelessWidget {
                           fontSize: 14)),
                 ),
                 const Spacer(),
-                // TTS
-                Obx(() => GestureDetector(
-                      onTap: () => controller.speak(word.kazakh),
-                      child: Icon(
-                        controller.isSpeaking.value
-                            ? Icons.stop_circle_outlined
-                            : Icons.volume_up_outlined,
-                        size: 18,
-                        color:
-                            Theme.of(context).colorScheme.primary,
-                      ),
-                    )),
-                const SizedBox(width: 4),
                 // Favorite — access RxList directly so GetX tracks it
                 Obx(() {
                   final isFav = controller.favorites

@@ -12,7 +12,6 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   get: ^4.6.6
-  flutter_tts: ^4.0.2
   confetti: ^0.7.0
   share_plus: ^9.0.0
   http: ^1.2.1
