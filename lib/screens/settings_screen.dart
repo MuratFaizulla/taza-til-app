@@ -267,38 +267,151 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _sectionHeader('Қосымша туралы', Icons.info_outline, primary),
           const SizedBox(height: 8),
           _buildCard([
-            // App logo + version
+            // ── App header ────────────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
+              child: Column(
+                children: [
+                  // Logo + title row
+                  Row(
+                    children: [
+                      Container(
+                        width: 56,
+                        height: 56,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [primary, const Color(0xFF1B5E20)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                              color: primary.withValues(alpha: 0.3),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: const Center(
+                          child: Text('ТТ',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 20)),
+                        ),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Таза Тіл',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 20)),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: primary.withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text('v3.0.0',
+                                      style: TextStyle(
+                                          fontSize: 11,
+                                          color: primary,
+                                          fontWeight: FontWeight.w700)),
+                                ),
+                                const SizedBox(width: 6),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: Colors.green.withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: const Text('Stable',
+                                      style: TextStyle(
+                                          fontSize: 11,
+                                          color: Colors.green,
+                                          fontWeight: FontWeight.w700)),
+                                ),
+                                const SizedBox(width: 6),
+                                Text('2025',
+                                    style: TextStyle(
+                                        fontSize: 11,
+                                        color: Colors.grey[400])),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Description box
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: primary.withValues(alpha: 0.05),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                          color: primary.withValues(alpha: 0.15)),
+                    ),
+                    child: const Text(
+                      'Таза Тіл — қазақ тіліндегі орыс калькаларын '
+                      'анықтауға арналған қосымша. Сөздікте 1 700-ден '
+                      'астам қате қолданыс пен оның дұрыс баламасы бар. '
+                      'Claude және Grok жасанды интеллекті арқылы '
+                      'кез келген мәтінді талдап, калькаларды автоматты '
+                      'түрде анықтайды.',
+                      style: TextStyle(
+                          fontSize: 13,
+                          height: 1.6,
+                          color: Colors.black87),
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  // Stats row
+                  Row(
+                    children: [
+                      _aboutStat('1 748', 'сөз базасы', primary),
+                      _vDivider(),
+                      _aboutStat('2', 'AI модель', Colors.deepPurple),
+                      _vDivider(),
+                      _aboutStat('5', 'санат', Colors.teal),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1, indent: 16, endIndent: 16),
+
+            // AI providers
             ListTile(
               leading: Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [primary, const Color(0xFF1B5E20)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Text('ТТ',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 14)),
-              ),
-              title: const Text('Таза Тіл',
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
-              subtitle: const Text('Нұсқа 2.0.0  •  2025'),
-              trailing: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: primary.withValues(alpha: 0.1),
+                  color: Colors.deepPurple.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text('Stable',
-                    style: TextStyle(
-                        fontSize: 10,
-                        color: primary,
-                        fontWeight: FontWeight.w700)),
+                child: const Text('🤖', style: TextStyle(fontSize: 18)),
+              ),
+              title: const Text('Жасанды интеллект',
+                  style: TextStyle(fontWeight: FontWeight.w500)),
+              subtitle: const Text(
+                'Claude (Anthropic) · Grok (xAI)\n'
+                'Мәтін талдауы және калька анықтауы',
+                style: TextStyle(fontSize: 12, height: 1.5),
               ),
             ),
             const Divider(height: 1, indent: 16, endIndent: 16),
@@ -309,8 +422,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               title: const Text('Мақсат',
                   style: TextStyle(fontWeight: FontWeight.w500)),
               subtitle: const Text(
-                'Қазақ тіліндегі орыс калькаларын анықтап, '
-                'таза қазақша баламаларын ұсыну.',
+                'Қазақ тілін орыс калькаларынан тазартып, '
+                'ана тілімізді байыту және дамыту.',
                 style: TextStyle(fontSize: 12),
               ),
             ),
@@ -371,10 +484,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
               title: const Text('Жаңартулар тарихы',
                   style: TextStyle(fontWeight: FontWeight.w500)),
               children: [
+                _changelogItem(context, 'v3.0.0', '2025',
+                    ['📚 1 748 жаңа калька сөз базасы',
+                     '⚡ Grok AI (xAI) қолдауы қосылды',
+                     '🤖 Claude + Grok провайдер таңдауы',
+                     '❌✅ Карточкаларда emoji белгілері',
+                     '🧹 Сөз базасы толық жаңартылды']),
                 _changelogItem(context, 'v2.0.0', '2025',
                     ['🔥 Live fire streak анимациясы',
-                     '🤖 Groq AI талдауы (Llama 3.3)',
-                     '📊 Дыбыс жылдамдығы баптаулары',
+                     '🤖 Claude AI талдауы',
                      '🔤 Қаріп өлшемін реттеу',
                      '💾 ЖИ тарихын сақтау']),
                 _changelogItem(context, 'v1.0.0', '2024',
@@ -625,6 +743,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
       borderRadius: 10,
     );
   }
+
+  // ── About stat cell ──────────────────────────────────────────────────────
+  Widget _aboutStat(String value, String label, Color color) {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(value,
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: color)),
+          const SizedBox(height: 2),
+          Text(label,
+              style: TextStyle(fontSize: 11, color: Colors.grey[500])),
+        ],
+      ),
+    );
+  }
+
+  Widget _vDivider() => Container(
+        width: 1, height: 36,
+        color: Colors.grey.withValues(alpha: 0.2),
+      );
 
   // ── Changelog tile ───────────────────────────────────────────────────────
   Widget _changelogItem(BuildContext context, String version, String date,

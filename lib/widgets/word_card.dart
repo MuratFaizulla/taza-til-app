@@ -54,46 +54,64 @@ class WordCard extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Kalka badge
+        // Kalka badge  ❌
         Expanded(
           child: Container(
             padding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
               color: const Color(0xFFFFEBEE),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: const Color(0xFFEF9A9A)),
             ),
-            child: Text(
-              word.kalka,
-              style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFFD32F2F)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('❌',
+                    style: TextStyle(fontSize: 11, height: 1)),
+                const SizedBox(height: 2),
+                Text(
+                  word.kalka,
+                  style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFFD32F2F),
+                      height: 1.3),
+                ),
+              ],
             ),
           ),
         ),
         const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8),
+          padding: EdgeInsets.symmetric(horizontal: 6),
           child: Icon(Icons.arrow_forward,
-              color: Color(0xFF2E7D32), size: 18),
+              color: Colors.grey, size: 16),
         ),
-        // Kazakh badge
+        // Kazakh badge  ✅
         Expanded(
           child: Container(
             padding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
               color: const Color(0xFFE8F5E9),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: const Color(0xFFA5D6A7)),
             ),
-            child: Text(
-              word.kazakh,
-              style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF1B5E20)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('✅',
+                    style: TextStyle(fontSize: 11, height: 1)),
+                const SizedBox(height: 2),
+                Text(
+                  word.kazakh,
+                  style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF1B5E20),
+                      height: 1.3),
+                ),
+              ],
             ),
           ),
         ),
@@ -257,34 +275,50 @@ class WordCardHighlight extends StatelessWidget {
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 8, vertical: 3),
+                      horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: const Color(0xFFFFEBEE),
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  child: Text(word.kalka,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFFD32F2F),
-                          fontSize: 14)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('❌',
+                          style: TextStyle(fontSize: 10, height: 1)),
+                      const SizedBox(height: 2),
+                      Text(word.kalka,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFFD32F2F),
+                              fontSize: 13)),
+                    ],
+                  ),
                 ),
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  padding: EdgeInsets.symmetric(horizontal: 6),
                   child: Icon(Icons.arrow_forward,
-                      size: 16, color: Color(0xFF2E7D32)),
+                      size: 14, color: Colors.grey),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 8, vertical: 3),
+                      horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: const Color(0xFFE8F5E9),
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  child: Text(word.kazakh,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF1B5E20),
-                          fontSize: 14)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('✅',
+                          style: TextStyle(fontSize: 10, height: 1)),
+                      const SizedBox(height: 2),
+                      Text(word.kazakh,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF1B5E20),
+                              fontSize: 13)),
+                    ],
+                  ),
                 ),
                 const Spacer(),
                 // Favorite — access RxList directly so GetX tracks it
