@@ -109,6 +109,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             const Divider(height: 1, indent: 16, endIndent: 16),
 
+            // API key guide
+            _apiKeyGuide(context, primary),
+            const Divider(height: 1, indent: 16, endIndent: 16),
+
             // Claude key
             _keySection(
               context: context,
@@ -429,7 +433,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     color: primary.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
-                                  child: Text('v3.0.0',
+                                  child: Text('v5.0.0',
                                       style: TextStyle(
                                           fontSize: 11,
                                           color: primary,
@@ -450,7 +454,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           fontWeight: FontWeight.w700)),
                                 ),
                                 const SizedBox(width: 6),
-                                Text('2025',
+                                Text('2026',
                                     style: TextStyle(
                                         fontSize: 11,
                                         color: Colors.grey[400])),
@@ -582,7 +586,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onTap: () {
                 // Copy GitHub URL to clipboard
                 _copyToClipboard(
-                    context, 'https://github.com/yourusername/taza-til');
+                    context, 'https://github.com/MuratFaizulla/taza-til-app');
               },
             ),
             const Divider(height: 1, indent: 16, endIndent: 16),
@@ -593,6 +597,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
               title: const Text('Жаңартулар тарихы',
                   style: TextStyle(fontWeight: FontWeight.w500)),
               children: [
+                _changelogItem(context, 'v5.0.0', '2026',
+                    ['👋 Онбординг — бірінші іске қосылу слайдтары',
+                     '🔍 Детектор фразалық іздеу түзетілді',
+                     '📊 Жаттығу үлгерімі баптауларда',
+                     '🔑 API кілт нұсқаулығы қосылды',
+                     '⚡ Скролл анимация жылдамдатылды']),
+                _changelogItem(context, 'v4.0.0', '2026',
+                    ['🃏 Жаттығу — флэшкарта режимі қосылды',
+                     '🧪 84 юнит тест жазылды',
+                     '📈 Үйренген сөздер есебі',
+                     '🔄 Жаңа сөздер алдымен көрінеді']),
                 _changelogItem(context, 'v3.0.0', '2025',
                     ['📚 1 748 жаңа калька сөз базасы',
                      '⚡ Grok AI (xAI) қолдауы қосылды',
@@ -613,7 +628,324 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ]),
 
+          const SizedBox(height: 20),
+
+          // ── Калька дегеніміз не? ──────────────────────────────────────────
+          _sectionHeader('Калька дегеніміз не?', Icons.school_outlined, const Color(0xFF1565C0)),
+          const SizedBox(height: 8),
+          _buildCard([
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Definition
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1565C0).withValues(alpha: 0.06),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                          color: const Color(0xFF1565C0).withValues(alpha: 0.2)),
+                    ),
+                    child: const Text(
+                      '📖 Калька — бір тілдегі сөз немесе тіркесті екінші тілге сөзбе-сөз аудару нәтижесінде пайда болған тіл бірлігі.',
+                      style: TextStyle(
+                          fontSize: 13, height: 1.6, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+
+                  // Types
+                  const Text('Калька түрлері:',
+                      style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+                  const SizedBox(height: 8),
+                  _kalkaTypeRow('🔤 Лексикалық',
+                      'Орысша сөзді қазақшаға сөзбе-сөз аудару',
+                      '"скорая помощь" → "жедел жәрдем" (дұрыс: "жедел медициналық көмек")'),
+                  _kalkaTypeRow('📝 Фразалық',
+                      'Орысша тіркесті сөзбе-сөз аудару',
+                      '"под контролем" → "бақылауда" (дұрыс: "бақылауға алынған")'),
+                  _kalkaTypeRow('🔠 Синтаксистік',
+                      'Орыс сөйлем құрылымын қазақшаға көшіру',
+                      '"жаңбыр басталды" (орысша үлгі) → дұрысы: "жаңбыр жауды"'),
+
+                  const SizedBox(height: 14),
+
+                  // Why it matters
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE8F5E9),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('💡', style: TextStyle(fontSize: 16)),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Калькалар қазақ тілінің табиғи дамуына кедергі жасайды. Таза Тіл қосымшасы осындай қателерді анықтауға және дұрыс баламаларды үйренуге көмектеседі.',
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF1B5E20),
+                                height: 1.5),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ]),
+
           const SizedBox(height: 32),
+        ],
+      ),
+    );
+  }
+
+  Widget _kalkaTypeRow(String type, String desc, String example) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(type,
+                style: const TextStyle(
+                    fontSize: 12, fontWeight: FontWeight.w600)),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(desc,
+                    style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+                const SizedBox(height: 2),
+                Text(example,
+                    style: const TextStyle(
+                        fontSize: 11,
+                        color: Color(0xFF1565C0),
+                        fontStyle: FontStyle.italic)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _kalkaExampleRow(String wrong, String correct) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFEBEE),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text('❌ $wrong',
+                  style: const TextStyle(
+                      fontSize: 12, color: Color(0xFFD32F2F))),
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 6),
+            child: Icon(Icons.arrow_forward, size: 14, color: Colors.grey),
+          ),
+          Expanded(
+            child: Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE8F5E9),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text('✅ $correct',
+                  style: const TextStyle(
+                      fontSize: 12, color: Color(0xFF2E7D32))),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _apiKeyGuide(BuildContext context, Color primary) {
+    return ExpansionTile(
+      leading: Container(
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: Colors.amber.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Icon(Icons.help_outline, color: Colors.amber, size: 20),
+      ),
+      title: const Text('API кілтін қалай алуға болады?',
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+      subtitle: const Text('Тегін нұсқаулық',
+          style: TextStyle(fontSize: 12)),
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          child: Column(
+            children: [
+              // Claude
+              _apiStepCard(
+                context: context,
+                logo: '🤖',
+                name: 'Claude (Anthropic)',
+                color: const Color(0xFF7C3AED),
+                steps: [
+                  'console.anthropic.com сайтына кір',
+                  'Тіркелу / кіру (Sign up / Log in)',
+                  '"API Keys" бөліміне өт',
+                  '"Create Key" батырмасын бас',
+                  'Кілтті көшіріп, төмендегі өріске қой',
+                ],
+                url: 'console.anthropic.com',
+                note: '\$5 тегін кредит бастапқыда беріледі',
+              ),
+              const SizedBox(height: 12),
+              // Groq
+              _apiStepCard(
+                context: context,
+                logo: '⚡',
+                name: 'Groq (xAI)',
+                color: const Color(0xFFD97706),
+                steps: [
+                  'console.groq.com сайтына кір',
+                  'Тіркелу / кіру (Sign up / Log in)',
+                  '"API Keys" → "Create API Key"',
+                  'Кілтті көшіріп, төмендегі өріске қой',
+                ],
+                url: 'console.groq.com',
+                note: 'Groq тегін қолдануға болады (лимит бар)',
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _apiStepCard({
+    required BuildContext context,
+    required String logo,
+    required String name,
+    required Color color,
+    required List<String> steps,
+    required String url,
+    required String note,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(logo, style: const TextStyle(fontSize: 18)),
+              const SizedBox(width: 8),
+              Text(name,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
+                      color: color)),
+              const Spacer(),
+              GestureDetector(
+                onTap: () => _copyToClipboard(context, url),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.copy, size: 11, color: color),
+                      const SizedBox(width: 4),
+                      Text(url,
+                          style: TextStyle(
+                              fontSize: 11,
+                              color: color,
+                              fontWeight: FontWeight.w600)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          ...steps.asMap().entries.map((e) => Padding(
+                padding: const EdgeInsets.only(bottom: 5),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 20,
+                      height: 20,
+                      margin: const EdgeInsets.only(right: 8, top: 1),
+                      decoration: BoxDecoration(
+                        color: color.withValues(alpha: 0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Text('${e.key + 1}',
+                            style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: color)),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(e.value,
+                          style: const TextStyle(fontSize: 13, height: 1.4)),
+                    ),
+                  ],
+                ),
+              )),
+          const SizedBox(height: 6),
+          Container(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.green.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.info_outline,
+                    size: 14, color: Colors.green),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(note,
+                      style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.green,
+                          fontWeight: FontWeight.w500)),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
