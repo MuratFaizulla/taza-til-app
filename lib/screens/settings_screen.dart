@@ -204,6 +204,115 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           const SizedBox(height: 20),
 
+          // ── Flashcard Progress ────────────────────────────────────────────
+          _sectionHeader('Жаттығу үлгерімі', Icons.style_outlined, const Color(0xFF2E7D32)),
+          const SizedBox(height: 8),
+          _buildCard([
+            Obx(() {
+              final learned = controller.learnedCount.value;
+              final total = controller.allWords.length;
+              final percent = total > 0 ? learned / total : 0.0;
+              return Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.school, color: Color(0xFF2E7D32), size: 20),
+                        const SizedBox(width: 8),
+                        Text(
+                          '$learned / $total сөз үйренілді',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w700, fontSize: 15),
+                        ),
+                        const Spacer(),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE8F5E9),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            '${(percent * 100).toInt()}%',
+                            style: const TextStyle(
+                                color: Color(0xFF2E7D32),
+                                fontWeight: FontWeight.w800,
+                                fontSize: 13),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                      child: LinearProgressIndicator(
+                        value: percent,
+                        minHeight: 10,
+                        backgroundColor:
+                            const Color(0xFF2E7D32).withValues(alpha: 0.12),
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                            Color(0xFF2E7D32)),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        _progressBadge(
+                            '🔥 Жаңа', total - learned, Colors.orange),
+                        const SizedBox(width: 8),
+                        _progressBadge(
+                            '✅ Үйренген', learned, const Color(0xFF2E7D32)),
+                      ],
+                    ),
+                    if (learned > 0) ...[
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () => Get.dialog(AlertDialog(
+                            title: const Text('Үлгерімді тазарту'),
+                            content: const Text(
+                                'Барлық үйренген сөздер тізімі тазаланады. Келесі сессияда сөздер қайтадан жаңа болып саналады.'),
+                            actions: [
+                              TextButton(
+                                  onPressed: Get.back,
+                                  child: const Text('Болдырмау')),
+                              TextButton(
+                                onPressed: () {
+                                  controller.clearLearnedWords();
+                                  Get.back();
+                                },
+                                child: Text('Тазарту',
+                                    style:
+                                        TextStyle(color: Colors.red[400])),
+                              ),
+                            ],
+                          )),
+                          icon: const Icon(Icons.refresh, size: 16),
+                          label: const Text('Үлгерімді тазарту',
+                              style: TextStyle(fontSize: 13)),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.red[400],
+                            side: BorderSide(
+                                color: Colors.red.withValues(alpha: 0.4)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            padding:
+                                const EdgeInsets.symmetric(vertical: 10),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              );
+            }),
+          ]),
+
+          const SizedBox(height: 20),
+
           // ── Statistics ────────────────────────────────────────────────────
           _sectionHeader('Статистика', Icons.bar_chart_outlined, primary),
           const SizedBox(height: 8),
@@ -506,6 +615,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           const SizedBox(height: 32),
         ],
+      ),
+    );
+  }
+
+  Widget _progressBadge(String label, int count, Color color) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: color.withValues(alpha: 0.25)),
+        ),
+        child: Column(
+          children: [
+            Text('$count',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: color)),
+            const SizedBox(height: 2),
+            Text(label,
+                style: TextStyle(fontSize: 11, color: color)),
+          ],
+        ),
       ),
     );
   }

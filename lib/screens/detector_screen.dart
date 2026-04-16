@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 import '../controllers/word_controller.dart';
+import '../models/word.dart';
 import '../widgets/word_card.dart';
 
 class DetectorScreen extends StatefulWidget {
@@ -802,48 +803,72 @@ class _DetectorScreenState extends State<DetectorScreen> {
   }
 
   List<InlineSpan> _buildSpans(String text) {
-    final kalkaSet = controller.kalkaWordSet;
-    final spans = <InlineSpan>[];
-    final tokenPattern =
-        RegExp(r'[\p{L}\p{N}]+|[^\p{L}\p{N}]+', unicode: true);
+    final detected = controller.detectKalkaInText(text);
+    final defaultStyle = TextStyle(
+        fontSize: 15,
+        color: Theme.of(context).colorScheme.onSurface,
+        height: 1.6);
 
-    for (final m in tokenPattern.allMatches(text)) {
-      final token = m.group(0)!;
-      final isKalka = kalkaSet.contains(token.toLowerCase());
-      if (isKalka) {
-        final alt = controller.kalkaAlternative(token.toLowerCase());
-        spans.add(WidgetSpan(
-          alignment: PlaceholderAlignment.baseline,
-          baseline: TextBaseline.alphabetic,
-          child: Tooltip(
-            message: alt != null ? '→ ${alt.kazakh}' : '',
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFEBEE),
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: const Color(0xFFEF9A9A)),
-              ),
-              child: Text(token,
-                  style: const TextStyle(
-                      fontSize: 15,
-                      color: Color(0xFFD32F2F),
-                      fontWeight: FontWeight.w600,
-                      height: 1.6)),
-            ),
-          ),
-        ));
-      } else {
-        spans.add(TextSpan(
-          text: token,
-          style: TextStyle(
-              fontSize: 15,
-              color: Theme.of(context).colorScheme.onSurface,
-              height: 1.6),
-        ));
+    if (detected.isEmpty) {
+      return [TextSpan(text: text, style: defaultStyle)];
+    }
+
+    final lowerText = text.toLowerCase();
+
+    // Collect all phrase match positions
+    final matches = <_PhraseMatch>[];
+    for (final word in detected) {
+      final phrase = word.kalka.toLowerCase();
+      if (phrase.length < 4) continue;
+      int start = 0;
+      while (true) {
+        final idx = lowerText.indexOf(phrase, start);
+        if (idx == -1) break;
+        matches.add(_PhraseMatch(idx, idx + phrase.length, word));
+        start = idx + phrase.length;
       }
     }
+    matches.sort((a, b) => a.start.compareTo(b.start));
+
+    final spans = <InlineSpan>[];
+    int pos = 0;
+
+    for (final m in matches) {
+      if (m.start < pos) continue; // skip overlapping
+      if (m.start > pos) {
+        spans.add(TextSpan(
+            text: text.substring(pos, m.start), style: defaultStyle));
+      }
+      spans.add(WidgetSpan(
+        alignment: PlaceholderAlignment.baseline,
+        baseline: TextBaseline.alphabetic,
+        child: Tooltip(
+          message: '→ ${m.word.kazakh}',
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFEBEE),
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(color: const Color(0xFFEF9A9A)),
+            ),
+            child: Text(
+              text.substring(m.start, m.end),
+              style: const TextStyle(
+                  fontSize: 15,
+                  color: Color(0xFFD32F2F),
+                  fontWeight: FontWeight.w600,
+                  height: 1.6),
+            ),
+          ),
+        ),
+      ));
+      pos = m.end;
+    }
+
+    if (pos < text.length) {
+      spans.add(TextSpan(text: text.substring(pos), style: defaultStyle));
+    }
+
     return spans;
   }
 }
@@ -959,6 +984,13 @@ class _AiHistoryTile extends StatelessWidget {
       ),
     );
   }
+}
+
+class _PhraseMatch {
+  final int start;
+  final int end;
+  final Word word;
+  const _PhraseMatch(this.start, this.end, this.word);
 }
 
 class _HistoryTile extends StatelessWidget {

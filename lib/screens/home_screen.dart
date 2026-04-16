@@ -5,6 +5,7 @@ import 'dictionary_screen.dart';
 import 'detector_screen.dart';
 import 'quiz_screen.dart';
 import 'word_of_day_screen.dart';
+import 'flashcard_screen.dart';
 import 'settings_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -23,68 +24,85 @@ class HomeScreen extends StatelessWidget {
 
     return Obx(() {
       final idx = controller.currentTabIndex.value;
+      final isFlashcard = idx == 4;
+
       return Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        appBar: AppBar(
-          title: Row(children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Text(
-                'ТТ',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 14,
-                    letterSpacing: 0.5),
-              ),
-            ),
-            const SizedBox(width: 10),
-            const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Таза Тіл',
+        appBar: isFlashcard
+            ? AppBar(
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_new,
+                      size: 20, color: Colors.white),
+                  onPressed: () => controller.changeTab(2),
+                ),
+                title: const Text('Жаттығу — Флэшкарталар',
                     style: TextStyle(
                         fontWeight: FontWeight.w700,
-                        fontSize: 18,
-                        color: Colors.white,
-                        letterSpacing: 0.3)),
-                Text('Қазақ тілінің тазалық тексергіші',
-                    style: TextStyle(fontSize: 11, color: Colors.white70)),
-              ],
-            ),
-          ]),
-          actions: [
-            if (idx == 0)
-              Obx(() => Padding(
-                    padding: const EdgeInsets.only(right: 4),
-                    child: Center(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          '${controller.filteredWords.length} сөз',
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
+                        fontSize: 17,
+                        color: Colors.white)),
+              )
+            : AppBar(
+                title: Row(children: [
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                  )),
-            IconButton(
-              icon: const Icon(Icons.settings_outlined, color: Colors.white),
-              onPressed: () => Get.to(() => const SettingsScreen()),
-            ),
-          ],
-        ),
+                    child: const Text(
+                      'ТТ',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 14,
+                          letterSpacing: 0.5),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Таза Тіл',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18,
+                              color: Colors.white,
+                              letterSpacing: 0.3)),
+                      Text('Қазақ тілінің тазалық тексергіші',
+                          style:
+                              TextStyle(fontSize: 11, color: Colors.white70)),
+                    ],
+                  ),
+                ]),
+                actions: [
+                  if (idx == 0)
+                    Obx(() => Padding(
+                          padding: const EdgeInsets.only(right: 4),
+                          child: Center(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                '${controller.filteredWords.length} сөз',
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ),
+                        )),
+                  IconButton(
+                    icon: const Icon(Icons.settings_outlined,
+                        color: Colors.white),
+                    onPressed: () => Get.to(() => const SettingsScreen()),
+                  ),
+                ],
+              ),
         body: IndexedStack(
           index: idx,
           children: [
@@ -92,6 +110,7 @@ class HomeScreen extends StatelessWidget {
             DetectorScreen(),
             const QuizScreen(),
             const WordOfDayScreen(),
+            const FlashcardScreen(),
           ],
         ),
         bottomNavigationBar: Container(
@@ -105,7 +124,7 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
           child: BottomNavigationBar(
-            currentIndex: idx,
+            currentIndex: idx.clamp(0, 3),
             onTap: controller.changeTab,
             elevation: 0,
             selectedLabelStyle:

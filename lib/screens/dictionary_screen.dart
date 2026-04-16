@@ -50,8 +50,8 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                       _expanded.add(i);
                     }
                   }),
-                ).animate(delay: (i * 30).ms).fadeIn(duration: 250.ms).slideX(
-                    begin: -0.05, duration: 250.ms);
+                ).animate(delay: (i.clamp(0, 10) * 30).ms).fadeIn(duration: 200.ms).slideX(
+                    begin: -0.05, duration: 200.ms);
               },
             );
           }),

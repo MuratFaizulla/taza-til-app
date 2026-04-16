@@ -224,16 +224,16 @@ class WordController extends GetxController {
 
   List<Word> detectKalkaInText(String text) {
     if (text.trim().isEmpty) return [];
-    final seen = <String>{};
+    final lowerText = text.toLowerCase();
     final result = <Word>[];
-    final tokens = text.split(RegExp(r'[^\p{L}\p{N}]+', unicode: true));
-    for (final token in tokens) {
-      final clean = token.toLowerCase().trim();
-      if (clean.isEmpty || seen.contains(clean)) continue;
-      final match = _kalkaMap[clean];
-      if (match != null) {
-        seen.add(clean);
-        result.add(match);
+    final seen = <String>{};
+    for (final entry in _kalkaMap.entries) {
+      final phrase = entry.key; // already lowercase
+      if (phrase.length < 4) continue;
+      if (seen.contains(phrase)) continue;
+      if (lowerText.contains(phrase)) {
+        seen.add(phrase);
+        result.add(entry.value);
       }
     }
     return result;
@@ -458,18 +458,16 @@ class WordController extends GetxController {
       learnedWords.add(kalka);
       learnedCount.value = learnedWords.length;
       Hive.box('settings').put('learnedWords', learnedWords.toList());
-      Get.snackbar(
-        '🎉 Керемет!',
-        'Сіз «$kalka» сөзін үйрендіңіз!',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: const Color(0xFF2E7D32),
-        colorText: Colors.white,
-        duration: const Duration(seconds: 2),
-      );
     }
   }
 
   bool isWordLearned(String kalka) => learnedWords.contains(kalka);
+
+  void clearLearnedWords() {
+    learnedWords.clear();
+    learnedCount.value = 0;
+    Hive.box('settings').put('learnedWords', []);
+  }
 
   // ══════════════════════════════════════════════════════════════════════════
   // Quiz
