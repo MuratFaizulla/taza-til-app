@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'controllers/word_controller.dart';
 import 'screens/home_screen.dart';
+import 'screens/onboarding_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,13 +18,23 @@ void main() async {
   final controller = Get.put(WordController());
   final initialMode =
       controller.isDarkMode.value ? ThemeMode.dark : ThemeMode.light;
+  final onboardingDone =
+      Hive.box('settings').get('onboardingDone', defaultValue: false) as bool;
 
-  runApp(TazaTilApp(initialThemeMode: initialMode));
+  runApp(TazaTilApp(
+    initialThemeMode: initialMode,
+    showOnboarding: !onboardingDone,
+  ));
 }
 
 class TazaTilApp extends StatelessWidget {
   final ThemeMode initialThemeMode;
-  const TazaTilApp({super.key, required this.initialThemeMode});
+  final bool showOnboarding;
+  const TazaTilApp({
+    super.key,
+    required this.initialThemeMode,
+    required this.showOnboarding,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +44,7 @@ class TazaTilApp extends StatelessWidget {
       themeMode: initialThemeMode,
       theme: _buildLightTheme(),
       darkTheme: _buildDarkTheme(),
-      home: const HomeScreen(),
+      home: showOnboarding ? const OnboardingScreen() : const HomeScreen(),
       // Apply user's font scale preference globally
       builder: (context, child) {
         final ctrl = Get.find<WordController>();
