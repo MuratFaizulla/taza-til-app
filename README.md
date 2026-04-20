@@ -4,18 +4,24 @@
 
 > A Flutter app for checking Kazakh language purity — detects Russian loanwords (кальки) and suggests native Kazakh alternatives.
 
+**Нұсқа / Version:** `5.0.0`
+
 ---
 
 ## Мүмкіндіктер / Features
 
+### 📖 Онбординг (Onboarding)
+- Бірінші іске қосуда 3 беттік таныстыру экраны
+- Қолданбаның мүмкіндіктерін визуалды түсіндіру
+- Hive арқылы «бір рет ғана» логикасы
+
 ### 📚 Сөздік (Dictionary)
-- 72 калька сөз қазақша баламасымен
+- **1 748 калька сөз** қазақша баламасымен
 - Іздеу жолағы — нәтижелер нақты уақытта
 - Санат бойынша сүзу: Күнделікті · Бизнес · Білім · Технология · Медицина
 - Қиындық деңгейі: 🟢 Оңай · 🟡 Орташа · 🔴 Қиын
 - Таңдаулы сөздер ❤️
 - Карточканы ашқанда: анықтама, мысал, синонимдер
-- TTS — сөзді дауыстап оқу 🔊
 
 ### 🔍 Анықтаушы (Detector)
 - Мәтін енгізу — калькалар қызылмен белгіленеді
@@ -29,6 +35,12 @@
 - Прогресс-бар, нақты уақыттағы ұпай
 - Рекордты сақтау
 - Конфетти 🎊 — 7+ ұпай жинағанда
+
+### 🃏 Флеш-карточкалар (Flashcards)
+- Swipe-карточка режимі — оңға: білемін ✅, солға: білмеймін ❌
+- 3D айналу анимациясы (калька → қазақша)
+- Серия есебі және прогресс жолағы
+- Таңдаулылардан немесе барлық сөздерден дода жасау
 
 ### ☀️ Күн сөзі (Word of Day)
 - Күнделікті жаңа сөз (Hive арқылы сақталады)
@@ -49,7 +61,6 @@
 |-------|---------|
 | `get ^4.6.6` | State management & navigation |
 | `hive ^2.2.3` + `hive_flutter` | Local storage |
-| `flutter_tts ^4.0.2` | Text-to-speech |
 | `confetti ^0.7.0` | Confetti animation |
 | `share_plus ^9.0.0` | Share results |
 | `http ^1.2.1` | Claude & Grok API calls |
@@ -63,21 +74,32 @@
 lib/
 ├── main.dart
 ├── controllers/
-│   └── word_controller.dart     # GetX — весь state
+│   └── word_controller.dart       # GetX — барлық state
 ├── models/
-│   ├── word.dart                # Word model + Hive adapter
+│   ├── word.dart                  # Word model + Hive adapter
 │   └── quiz_question.dart
 ├── data/
-│   └── words_data.dart          # 72 калька сөз
+│   └── words_data.dart            # 1 748 калька сөз
 ├── screens/
-│   ├── home_screen.dart         # Bottom navigation (4 tabs)
+│   ├── onboarding_screen.dart     # Бірінші іске қосу
+│   ├── home_screen.dart           # Bottom navigation (5 қойынды)
 │   ├── dictionary_screen.dart
 │   ├── detector_screen.dart
 │   ├── quiz_screen.dart
+│   ├── flashcard_screen.dart      # Swipe флеш-карточкалар
 │   ├── word_of_day_screen.dart
 │   └── settings_screen.dart
 └── widgets/
     └── word_card.dart
+
+test/
+├── word_model_test.dart
+├── detector_logic_test.dart
+├── filter_logic_test.dart
+├── flashcard_deck_test.dart
+├── history_logic_test.dart
+├── detector_edge_cases_test.dart
+└── scroll_animation_test.dart
 ```
 
 ---
@@ -91,10 +113,16 @@ lib/
 ### Орнату / Installation
 
 ```bash
-git clone https://github.com/your-username/taza-til.git
+git clone https://github.com/MuratFaizulla/taza-til.git
 cd taza-til
 flutter pub get
 flutter run
+```
+
+### Тесттерді іске қосу / Run Tests
+
+```bash
+flutter test
 ```
 
 ### APK жинау / Build APK
@@ -129,6 +157,16 @@ Output: `build/app/outputs/flutter-apk/app-release.apk`
 
 ---
 
+## Нұсқалар тарихы / Changelog
+
+| Нұсқа | Жаңалықтар |
+|-------|-----------|
+| **5.0.0** | Онбординг экраны, флеш-карточка режимі, 7 unit-тест, баптаулар жақсартылды |
+| **3.1.0** | Анықтаушы алгоритмі түзетілді, scroll анимациясы оңтайландырылды |
+| **3.0.0** | Telegram + Grok AI деректерінен 1 748 сөз қосылды, өз иконкасы |
+
+---
+
 ## Лицензия / License
 
-MIT License © 2025
+MIT License © 2025 MuratFaizulla
